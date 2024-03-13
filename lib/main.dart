@@ -1,6 +1,9 @@
 import 'dart:ui';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'Card.dart' as HomeButtonCard;
 
 void main() {
   runApp(MyApp());
@@ -16,16 +19,20 @@ class MyApp extends StatelessWidget  {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'GothamMedium',
+
+      ),
       home: MyHomePage(),
     );
   }
 }
 
-class AppBarButtonState{
-    String currentState = "Music";
+class AppBarButtonState{ // getter, setter를 쓰는게 맞나 하는 의문은 드네요.
+    String currentState = "All";
 
     String getCurrentState(){
-
       return currentState;
     }
 
@@ -40,10 +47,7 @@ class AppBarButtonState{
     void setCurrentStateToPodcasts() {
       currentState = "Podcasts";
     }
-
-
 }
-
 
 
 class MyHomePage extends StatefulWidget {
@@ -52,80 +56,96 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String currentstate = "All";
+  AppBarButtonState currentButtonState = AppBarButtonState();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
+        leadingWidth: 5.0,
         backgroundColor: Color.fromRGBO(0,0,0,1),
           title: Row(
+
               children: <Widget>[
-                SizedBox(
 
-                    child: ElevatedButton(
-                        child: Text('All',style: TextStyle(color: (currentstate == "All") ? selectedTextColor : textColor,),),
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
 
-                        onPressed: (){
-                          setState(() {
-                            currentstate = "All";
+                  child: SizedBox(
+                      child: ElevatedButton(
+                          child: Text('All',style: TextStyle(color: (currentButtonState.getCurrentState() == "All") ? selectedTextColor : textColor,),),
 
-                          });
-
-                        },
-
-                        style:ElevatedButton.styleFrom(
-                          backgroundColor: (currentstate == "All") ? selectedColor : buttonColor,
-                        ),
-                    )
+                          onPressed: (){
+                            setState(() {
+                              currentButtonState.setCurrentStateToAll();
+                            });
+                          },
+                          style:ElevatedButton.styleFrom(
+                            backgroundColor: (currentButtonState.getCurrentState()  == "All") ? selectedColor : buttonColor,
+                          ),
+                      )
+                  ),
                 ),
-                SizedBox(
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SizedBox(
 
-                    child: ElevatedButton(
-                        child: Text('Music',style: TextStyle(color: (currentstate == "Music") ? selectedTextColor : textColor,),),
-                        onPressed: (){
-                          setState(() {
-                            currentstate = "Music";
-
-                          });
-
-                        },
-
-                        style:
-                        ElevatedButton.styleFrom(
-                          backgroundColor: (currentstate == "Music") ? selectedColor : buttonColor,
-                        ),
-                    )
+                      child: ElevatedButton(
+                          child: Text('Music',style: TextStyle(color: (currentButtonState.getCurrentState() == "Music") ? selectedTextColor : textColor,),),
+                          onPressed: (){
+                            setState(() {
+                              currentButtonState.setCurrentStateToMusic();
+                            });
+                          },
+                          style:
+                          ElevatedButton.styleFrom(
+                            backgroundColor: (currentButtonState.getCurrentState() == "Music") ? selectedColor : buttonColor,
+                          ),
+                      )
+                  ),
                 ),
-                SizedBox(
+                Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: SizedBox(
 
-                    child: ElevatedButton(
-                        child: Text('Podcasts',style: TextStyle(color: (currentstate == "Podcasts") ? selectedTextColor : textColor,),),
-                        onPressed: (){
+                      child: ElevatedButton(
+                          child: Text('Podcasts',style: TextStyle(color: (currentButtonState.getCurrentState() == "Podcasts") ? selectedTextColor : textColor,),),
+                          onPressed: (){
 
-                          setState(() {
-                            currentstate = "Podcasts";
+                            setState(() {
+                              currentButtonState.setCurrentStateToPodcasts();
+                            });
 
-                          });
+                          },
 
-                        },
-
-                        style:  ElevatedButton.styleFrom(
-                          backgroundColor: (currentstate == "Podcasts") ? selectedColor : buttonColor,
-                        ),
-                    )
+                          style:  ElevatedButton.styleFrom(
+                            backgroundColor: (currentButtonState.getCurrentState() == "Podcasts") ? selectedColor : buttonColor,
+                          ),
+                      )
+                  ),
                 ),
-
               ]
     ),
-        iconTheme: IconThemeData(color: Colors.white),
       ),
       body: Container(
-        color: Colors.black,
 
+        color: Colors.black,
+        child:
+          Column(
+            children: [
+              HomeButtonCard.HomeCardRow(),
+              HomeButtonCard.HomeCardRow(),
+              HomeButtonCard.HomeCardRow(),
+              HomeButtonCard.HomeCardRow()
+            ],
+
+          )
       ),
+
     );
 
   }
 
 }
+
