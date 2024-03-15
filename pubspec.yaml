@@ -28,10 +28,13 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
-  http: ^1.2.1
   flutter:
     sdk: flutter
   html: ^0.15.4
+  chaleno: ^0.0.7
+  auto_size_text: ^3.0.0
+  marquee: ^2.2.3
+
 
 
   # The following adds the Cupertino Icons font to your application.

@@ -1,58 +1,33 @@
-import 'package:html/parser.dart' show parse;
+import 'package:chaleno/chaleno.dart';
+
+List<String> srclist  = [];
+
+List<String> titlelist  = [];
+
+Future<List<String>> scrapData() async {
+  final albumclass = 'c-lazy-image__img lrv-u-background-color-grey-lightest lrv-u-width-100p lrv-u-display-block lrv-u-height-auto';
+  final titleclass = '.lrv-u-font-size-16';
+
+  final url = 'https://www.billboard.com/charts/hot-100/';
+  var response  = await Chaleno().load(url);
+  for (int i = 1; i < 17; i+= 2) {
+    String? subscribeCount = response?.getElementsByClassName(albumclass)[i].src;
+    srclist.add(subscribeCount.toString());
 
 
-main(List<String> args) {
-  parseData();
+  }
+
+  for (int i =3; i<11; i++){
+    String? titlecount = response?.querySelectorAll(titleclass)[i].innerHTML?.trim();
+    print(titlecount);
+    titlelist.add(titlecount.toString());
+  }
+  print(titlelist);
+  return srclist;
 }
 
-parseData(){
-  var document = parse("""
-    <div class="weather-item now"><!-- now  -->
-   <span class="time">Now</span>
-   
-    <div class="temp">19.8<span>℃</span>
-        <small>(23℃)</small>
-    </div>
-   
-   <table>
-       <tr>
-           <th><i class="icon01" aria-label="true"></i></th>
-           <td>93%</td>
-       </tr>
-       <tr>
-           <th><i class="icon02" aria-label="true"></i></th>
-           <td>south 2.2km/h</td>
-       </tr>
-       <tr>
-           <th><i class="icon03" aria-label="true"></i></th>
-           <td>-</td>
-       </tr>
-   </table>
-</div>
-  """);
-
-  //declaring a list of String to hold all the data.
-  List<String> data = [];
-
-  data.add(document.getElementsByClassName("time")[0].innerHtml);
-
-  //declaring variable for temp since we will be using it multiple places
-  var temp  = document.getElementsByClassName("temp")[0];
-  data.add(temp.innerHtml.substring(0, temp.innerHtml.indexOf("<span>")));
-  data.add(temp.getElementsByTagName("small")[0].innerHtml.replaceAll(RegExp("[(|)|℃]"), ""));
-
-  //We can also do document.getElementsByTagName("td") but I am just being more specific here.
-  var rows = document.getElementsByTagName("table")[0].getElementsByTagName("td");
-
-  //Map elememt to its innerHtml,  because we gonna need it.
-  //Iterate over all the table-data and store it in the data list
-  rows.map((e) => e.innerHtml).forEach((element) {
-    if(element != "-"){
-      data.add(element);
-    }
-  });
-
-  //print the data to console.
-  print(data[1]);
-
+void main() async{
+  var dfdf = await scrapData();
+  print(dfdf);
+  print("계산중");
 }

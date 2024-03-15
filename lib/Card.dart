@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 
 
 const buttonColor = Color.fromRGBO(42,42,42,1);
@@ -6,8 +7,7 @@ const textColor = Colors.white;
 const selectedColor = Colors.green;
 const selectedTextColor = Colors.black;
 
-
-Row HomeCardRow(/*String img, String txt*/) {
+Row HomeCardRow(String firstSongPicture, String Title, String secondSongPicture, String secondTitle) {
   const buttonColor = Color.fromRGBO(42, 42, 42, 1);
   const textColor = Colors.white;
 
@@ -21,10 +21,17 @@ Row HomeCardRow(/*String img, String txt*/) {
               children: [
                Image(
                  height: 50,
-                 image: NetworkImage('https://blog.kakaocdn.net/dn/V7HOT/btqDPKTX6PN/MtUvJOC92CMZKOj1LQrpg1/img.gif'),
+                 image: NetworkImage(firstSongPicture),
                ),
-                Padding(padding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
-                Text("VULTURES 1", style:  TextStyle(color: textColor, fontFamily: "GothamBold",),)
+                //Padding(padding: EdgeInsets.fromLTRB(5, 20, 10, 20)),
+                Padding(padding: EdgeInsets.fromLTRB(10, 20, 0, 20)),
+                Container(
+                  width:85,
+                  child: AutoSizeText(Title, style:  TextStyle(color: textColor, fontFamily: "GothamBold",fontSize: 10),),
+
+
+                )
+
               ],
 
 
@@ -42,11 +49,15 @@ Row HomeCardRow(/*String img, String txt*/) {
               children: [
                 Image(
                   height: 50,
-                  image: NetworkImage('https://blog.kakaocdn.net/dn/V7HOT/btqDPKTX6PN/MtUvJOC92CMZKOj1LQrpg1/img.gif'),
+                  image: NetworkImage(secondSongPicture),
                 ),
                 Padding(padding: EdgeInsets.fromLTRB(10, 20, 10, 20)),
-                Text("VULTURES 1", style:  TextStyle(color: textColor, fontFamily: "GothamBold",),)
-              ],
+                Container(
+                  width:85,
+                  child: AutoSizeText(secondTitle, style:  TextStyle(color: textColor, fontFamily: "GothamBold",fontSize: 10),),
+
+
+                )              ],
 
 
             ),
@@ -58,3 +69,5 @@ Row HomeCardRow(/*String img, String txt*/) {
       ]
   );
 }
+
+
