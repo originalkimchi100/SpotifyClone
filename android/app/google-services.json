@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "985101924445",
+    "project_id": "webmd-bd3d0",
+    "storage_bucket": "webmd-bd3d0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:985101924445:android:24216d8224370fe7a2b5b4",
+        "android_client_info": {
+          "package_name": "com.example.flutter.testdrive.test_drive"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDU0CNP2zISDX-yVD7c9PcN5RtzBXu6fr0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

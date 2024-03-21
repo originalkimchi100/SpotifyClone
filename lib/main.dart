@@ -7,9 +7,37 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'Card.dart' as HomeButtonCard;
 import 'everysong.dart' as BillBoardCol;
-void main() {
+import 'AppBarButtonState.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:sidebarx/sidebarx.dart';
+
+var appBarButtonState = AppBarButtonState();
+
+
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  FirebaseAuth.instance.authStateChanges().listen((User? user) {
+    if (user != null) {
+
+      print("userid"+ user.uid);
+    }
+    else{
+      print("asdfadsfdsaf");
+
+    }
+  });
+
   runApp(MyApp());
 }
+
+
 List<String> srclist  = [];
 List<String> titlelist  = [];
 int row = 2;
@@ -20,7 +48,7 @@ List<Map> finallist  = [];
 
 const buttonColor = Color.fromRGBO(42,42,42,1);
 const textColor = Colors.white;
-const selectedColor = Colors.green;
+const selectedColor =  Color.fromRGBO(30,215,96,1);
 const selectedTextColor = Colors.black;
 
 class MyApp extends StatelessWidget  {
@@ -31,32 +59,12 @@ class MyApp extends StatelessWidget  {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'GothamMedium',
-
       ),
       home: MyHomePage(),
     );
   }
 }
 
-class AppBarButtonState{ // getter, setter를 쓰는게 맞나 하는 의문은 드네요.
-    String currentState = "All";
-
-    String getCurrentState(){
-      return currentState;
-    }
-
-    void setCurrentStateToAll() {
-      currentState = "All";
-    }
-
-    void setCurrentStateToMusic() {
-      currentState = "Music";
-    }
-
-    void setCurrentStateToPodcasts() {
-      currentState = "Podcasts";
-    }
-}
 
 
 class MyHomePage extends StatefulWidget {
@@ -65,172 +73,293 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  AppBarButtonState currentButtonState = AppBarButtonState();
+  String _activeWidget = 'All';
+  Widget bodyWidget() {
+    switch (_activeWidget) {
+      case 'All':
+        return Column(
 
+            children: <Widget>[
+              FutureBuilder(future: scrapData(), builder: (BuildContext context, AsyncSnapshot snapshot)
+              {
+                if (snapshot.hasData == false) {
+                  return
+                    Expanded(
+
+                        child: Column(
+                          children: [
+                            Container(
+                              color: Colors.black,
+
+                            ),
+                            Container(
+                              child: Text("Fetching the data", style: TextStyle(color: textColor),textAlign: TextAlign.center,),
+                            ),
+                          ],
+                        )
+                    );
+
+                }
+                else {
+                  return
+                    Container(
+
+                      color: Colors.black,
+                      child:
+
+                      Column(
+                        children: [
+                          Text("Current Billboard Hot 100™",style: TextStyle(color: textColor,fontSize: 20,fontFamily: "GothamBold"),),
+
+
+                          HomeButtonCard.HomeCardRow(snapshot.data[0]['src'],snapshot.data[0]['title'],snapshot.data[1]['src'],snapshot.data[1]['title']),
+                          HomeButtonCard.HomeCardRow(snapshot.data[2]['src'],snapshot.data[2]['title'],snapshot.data[3]['src'],snapshot.data[3]['title']),
+                          HomeButtonCard.HomeCardRow(snapshot.data[4]['src'],snapshot.data[4]['title'],snapshot.data[5]['src'],snapshot.data[5]['title']),
+                          HomeButtonCard.HomeCardRow(snapshot.data[6]['src'],snapshot.data[6]['title'],snapshot.data[7]['src'],snapshot.data[7]['title'])
+
+
+                        ],
+
+                      ),
+                    );
+
+
+                }
+
+
+
+
+              }
+              )
+            ]
+        );
+      case 'Music':
+        return   Container(
+          width: double.infinity,
+    height: double.infinity,
+    child: Text("Musics!", style: TextStyle(color: textColor),textAlign: TextAlign.center,),
+    );
+      case 'Podcasts':
+         return  Container(
+          width: double.infinity,
+          height: double.infinity,
+          child: Text("Podcasts!", style: TextStyle(color: textColor),textAlign: TextAlign.center,),
+        );
+      case 'Players':
+        return Row(children: [SidebarX(
+    controller: SidebarXController(selectedIndex: 0),
+    items: const [
+    SidebarXItem(icon: Icons.home, label: 'Home'),
+    SidebarXItem(icon: Icons.search, label: 'Search'),
+    ],
+    ),],);
+      default:
+        return Container(
+          width: double.infinity,
+          height: double.infinity,
+          color: Colors.blue,
+          child: Text("The Error has occured"),
+        );
+    }
+  }
+
+  final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        drawerEnableOpenDragGesture: false,
+        key: _key,
         appBar: AppBar(
 
-          leadingWidth: 5.0,
+          automaticallyImplyLeading: false, // this will hide Drawer hamburger icon
+         // actions: <Widget>[Container()],
           backgroundColor: Color.fromRGBO(0, 0, 0, 1),
-          title: Row(
 
-              children: <Widget>[
-
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-
-                  child: SizedBox(
-                      child: ElevatedButton(
-                        child: Text('All', style: TextStyle(
-                          color: (currentButtonState.getCurrentState() == "All")
-                              ? selectedTextColor
-                              : textColor,),),
-
-                        onPressed: () {
-                          setState(() {
-                            currentButtonState.setCurrentStateToAll();
-                          });
-                        },
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: (currentButtonState
-                              .getCurrentState() == "All")
-                              ? selectedColor
-                              : buttonColor,
-                        ),
-                      )
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: SizedBox(
-
-                      child: ElevatedButton(
-                        child: Text('Music', style: TextStyle(
-                          color: (currentButtonState.getCurrentState() ==
-                              "Music") ? selectedTextColor : textColor,),),
-                        onPressed: () {
-                          setState(() {
-                            currentButtonState.setCurrentStateToMusic();
-                          });
-                        },
-                        style:
-                        ElevatedButton.styleFrom(
-                          backgroundColor: (currentButtonState
-                              .getCurrentState() == "Music")
-                              ? selectedColor
-                              : buttonColor,
-                        ),
-                      )
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: SizedBox(
-
-                      child: ElevatedButton(
-                        child: Text('Podcasts', style: TextStyle(
-                          color: (currentButtonState.getCurrentState() ==
-                              "Podcasts") ? selectedTextColor : textColor,),),
-                        onPressed: () {
-                          setState(() {
-                            currentButtonState.setCurrentStateToPodcasts();
-                          });
-                        },
-
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: (currentButtonState
-                              .getCurrentState() == "Podcasts")
-                              ? selectedColor
-                              : buttonColor,
-                        ),
-                      )
-                  ),
-                ),
-              ]
-          ),
-        ),
-        body: Container(
-            color:Colors.black,
-            child: Column(
-
+          title: Padding(
+            padding: const EdgeInsets.all(1.0),
+            child: Row(
                 children: <Widget>[
-                  FutureBuilder(future: scrapData(), builder: (BuildContext context, AsyncSnapshot snapshot)
-                    {
-                    if (snapshot.hasData == false) {
-                      return
-                        Expanded(
 
-                            child: Column(
-                              children: [
-                                Container(
-                                  color: Colors.black,
+                  Padding(
+                    padding: const EdgeInsets.all(5.0),
+                      child:SizedBox(
+                        width: 40,
+                        height: 40,
+                        child: FittedBox(
 
-                                ),
-                                Container(
-                                  child: Text("Fetching the data", style: TextStyle(color: textColor),textAlign: TextAlign.center,),
-                                ),
-                              ],
-                            )
-                        );
+                          child: FloatingActionButton.small(
+                            shape: new CircleBorder(),
+                            backgroundColor: selectedColor,
+                            onPressed: () => _key.currentState!.openDrawer(),
+                            child: Icon(
+                              Icons.person,
+                              color: Colors.black,
+                            ),
 
-                    }
-                    else {
-                      return
-                      Container(
+                          )
 
-                          color: Colors.black,
-                          child:
-
-                          Column(
-                            children: [
-                              Text("Current Billboard Hot 100™",style: TextStyle(color: textColor,fontSize: 20,fontFamily: "GothamBold"),),
+                        ),
+                      )
 
 
-                              HomeButtonCard.HomeCardRow(snapshot.data[0]['src'],snapshot.data[0]['title'],snapshot.data[1]['src'],snapshot.data[1]['title']),
-                              HomeButtonCard.HomeCardRow(snapshot.data[2]['src'],snapshot.data[2]['title'],snapshot.data[3]['src'],snapshot.data[3]['title']),
-                              HomeButtonCard.HomeCardRow(snapshot.data[4]['src'],snapshot.data[4]['title'],snapshot.data[5]['src'],snapshot.data[5]['title']),
-                              HomeButtonCard.HomeCardRow(snapshot.data[6]['src'],snapshot.data[6]['title'],snapshot.data[7]['src'],snapshot.data[7]['title'])
 
 
-                            ],
+
+                  ),
+
+
+
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+
+                        child: ElevatedButton(
+                          child: Text('All', style: TextStyle(
+                            color: (appBarButtonState.getCurrentState() == "All") ? selectedTextColor : textColor,fontSize: 12),),
+                          onPressed: () {
+                            setState(() {
+                              appBarButtonState.setCurrentStateToAll();
+                              _activeWidget = 'All';
+                            });
+                          },
+                          style: ElevatedButton.styleFrom(
+
+                            backgroundColor: (appBarButtonState
+                                .getCurrentState() == "All")
+                                ? selectedColor
+                                : buttonColor,
+                            padding: EdgeInsets.only(
+                              top: 9,
+                              right: 15,
+                              left: 15,
+                              bottom: 9,
+                            ),
+
+                            minimumSize: Size.zero,
 
                           ),
-                      );
+                        )
+                    ),
 
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
 
-                    }
+                        child: ElevatedButton(
+                          child: Text('Music', style: TextStyle(
+                            color: (appBarButtonState.getCurrentState() ==
+                                "Music") ? selectedTextColor : textColor,fontSize: 12),),
+                          onPressed: () {
+                            setState(() {
+                              appBarButtonState.setCurrentStateToMusic();
+                              _activeWidget = 'Music';
 
+                            });
+                          },
+                          style:
+                          ElevatedButton.styleFrom(
+                            backgroundColor: (appBarButtonState
+                                .getCurrentState() == "Music")
+                                ? selectedColor
+                                : buttonColor,
+                            padding: EdgeInsets.only(
+                              top: 9,
+                              right: 15,
+                              left: 15,
+                              bottom: 9,
+                            ),
 
+                            minimumSize: Size.zero,
 
+                          ),
+                        )
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(2.0),
+                    child: SizedBox(
 
-                  }
-                )
+                        child: ElevatedButton(
+                          child: Text('Podcasts', style: TextStyle(color: (appBarButtonState.getCurrentState() == "Podcasts") ? selectedTextColor : textColor,fontSize: 12),),
+                          onPressed: () {
+                            setState(() {
+                              appBarButtonState.setCurrentStateToPodcasts();
+                              _activeWidget = 'Podcasts';
 
+                            });
+                          },
 
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: (appBarButtonState
+                                .getCurrentState() == "Podcasts")
+                                ? selectedColor
+                                : buttonColor,
+                            padding: EdgeInsets.only(
+                              top: 9,
+                              right: 15,
+                              left: 15,
+                              bottom: 9,
+                            ),
 
-
-
+                            minimumSize: Size.zero,
+                          ),
+                        )
+                    ),
+                  ),
                 ]
-            )
-        )
+            ),
+          ),
+        ),
 
+        body: Container(
+            color:Colors.black,
+            child: bodyWidget()
+
+        ),
+      drawer: Drawer(
+
+
+          child: ListView(
+          padding: EdgeInsets.zero,
+            children: [
+              const DrawerHeader(
+              decoration: BoxDecoration(
+              color: Colors.blue,
+              ),
+              child: Text('Drawer Header'),
+      ),
+              ListTile(
+              title: const Text('Home'),
+              onTap: () {
+              // Then close the drawer
+               Navigator.pop(context);},
+      )]
+    ),
+      )
     );
   }
-
 }
+
+
+
+
+
+
+
+
 
 Future<List<Map>> scrapData() async {
   final albumclass = 'c-lazy-image__img lrv-u-background-color-grey-lightest lrv-u-width-100p lrv-u-display-block lrv-u-height-auto';
+
   final titleclass = '.lrv-u-font-size-16';
 
   final url = 'https://www.billboard.com/charts/hot-100/';
   var response  = await Chaleno().load(url);
 
-  for (int i = 1; i < 17; i+= 2) { //  for (int i = 1; i < 17; i+= 2) {
+  for (int i = 2; i < 17; i+= 2) { //  for (int i = 1; i < 17; i+= 2) {
     String? subscribeCount = response?.getElementsByClassName(albumclass)[i].src;
+    //getElementsByClassName(albumclass)[i].src;
+    print(subscribeCount);
     srclist.add(subscribeCount.toString());
 
 
@@ -238,7 +367,6 @@ Future<List<Map>> scrapData() async {
 
   for (int i =3; i<11; i++){ //  for (int i =3; i<11; i++){
     String? titlecount = response?.querySelectorAll(titleclass)[i].innerHTML?.trim();
-    print(titlecount);
     titlelist.add(titlecount.toString());
   }
   for(int i = 0; i<8; i++){
@@ -250,4 +378,6 @@ Future<List<Map>> scrapData() async {
   print(titlelist);
   return finallist;
 }
+
+
 
