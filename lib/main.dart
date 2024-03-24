@@ -29,7 +29,6 @@ void main() async {
       print("userid"+ user.uid);
     }
     else{
-      print("asdfadsfdsaf");
 
     }
   });
@@ -59,13 +58,257 @@ class MyApp extends StatelessWidget  {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'GothamMedium',
+        textSelectionTheme:TextSelectionThemeData(
+          selectionColor: Colors.green,
+          cursorColor: Colors.green,
+          selectionHandleColor: Colors.green,
+        )
       ),
-      home: MyHomePage(),
+      home: NotAuthCase(),
     );
   }
 }
 
+class NotAuthCase extends StatelessWidget {
+  const NotAuthCase({super.key});
+  @override
+  Widget build(BuildContext buildContext){
+    return Scaffold(
 
+     body:Column(
+       crossAxisAlignment: CrossAxisAlignment.center,
+       children: [
+
+         Expanded(child:
+         Container(
+             color: Colors.black,
+             child: Center(
+           child: Container(
+             width: 200,
+             height: 60,
+             decoration: BoxDecoration(
+               image: DecorationImage(
+                 image: AssetImage(
+                   'assets/Images/SpotifyLogo.png'
+                 )
+               )
+
+
+             ),
+
+           ),
+
+
+         ))
+         ),
+         Expanded(child:
+         Container(
+           color: Colors.black,
+           child: Text("Discover your next favorite playlist.",style: TextStyle(fontSize: 30, color: textColor,fontFamily: 'GothamMedium',fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
+
+         )
+         ),
+         Expanded(child:
+         Container(
+           width: double.infinity,
+           color: Colors.black,
+           child: Column(children: [
+             ElevatedButton(
+
+               onPressed: (){
+               print("hello world");
+
+
+             }, child: Text("Sign up",style: TextStyle(color: selectedTextColor),),style: ElevatedButton.styleFrom(
+               backgroundColor: selectedColor,
+               padding: EdgeInsets.symmetric(horizontal: 125),
+
+             ),),
+             SizedBox(
+               width:300,
+
+               child: OutlinedButton(onPressed:(){
+                 print("hello world");
+               },
+                 child:
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.start,
+                   children: [
+                     Container(
+                       height: 40,
+                       child: Image(
+                         image: AssetImage('assets/Images/GoogleLogo.png'),
+                       ),
+                     ),
+                     SizedBox(width: 30,),
+                     Text("Continue with Google",style: TextStyle(color: textColor),),
+                   ],
+
+                 ),
+                 style: OutlinedButton.styleFrom(
+                   minimumSize: Size.zero,
+                   padding: EdgeInsets.only(
+                      left: 10,
+                   ),
+
+                 ),
+               ),
+             ),
+             SizedBox(
+               width:300,
+
+               child: OutlinedButton(onPressed:(){
+                 print("hello world");
+               },
+                 child:
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.start,
+                     children: [
+                       SizedBox(width: 17, height:40),
+                       Container(
+                         height: 28,
+                         child: Image(
+                           image: AssetImage('assets/Images/FacebookLogo.png'),
+                         ),
+                       ),
+                       SizedBox(width: 30,),
+                       Text("Continue with Facebook",style: TextStyle(color: textColor),),
+
+                     ],
+
+                   ),
+                 style: OutlinedButton.styleFrom(
+                   minimumSize: Size.zero,
+                   padding: EdgeInsets.only(
+                     right: 10,
+                   ),
+
+                 ),
+               ),
+               ),
+             TextButton(
+
+               onPressed: (){
+                  Navigator.push(buildContext, MaterialPageRoute(builder: (context) => LoginCase()));
+
+               }, child: Text("Log in",style: TextStyle(color: textColor),),
+               ),
+
+
+
+           ],),
+         ),
+         ),
+
+       ],
+
+
+     )
+
+    );
+
+
+
+  }
+
+}
+class LoginCase extends StatefulWidget {
+
+
+  @override
+  _LoginCase createState() => _LoginCase();
+}
+class _LoginCase extends State<LoginCase>{
+  bool _showPassword = false;
+  void _togglevisibility() {
+    setState(() {
+      _showPassword = !_showPassword;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: Colors.white, //change your color here
+          ),
+          backgroundColor: Colors.black,
+        ),
+      body: Container(
+        color: Colors.black,
+        child: Column(
+
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+
+            Row(children: [SizedBox(width: 10,),Text("Email or username",style: TextStyle(color: textColor, fontSize: 30,fontWeight: FontWeight.bold),),]),
+            Row(
+              children: [
+                SizedBox(width: 10,height: 20,),
+                Container(
+                  width: 320,
+                  child: TextField(decoration: InputDecoration(
+                    filled: true,
+                    fillColor: buttonColor,
+                      enabledBorder: OutlineInputBorder(
+                      ),
+                      border: InputBorder.none
+
+                  ), cursorColor: textColor, style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),),
+                ),
+              ],
+            ),
+            Row(children: [SizedBox(width: 10,),Text("Password",style: TextStyle(color: textColor, fontSize: 20,fontWeight: FontWeight.bold),),]),
+            Row(
+              children: [
+                SizedBox(width: 10,),
+                Container(
+                  width: 320,
+                  child: TextFormField(
+                    obscureText: !_showPassword,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: buttonColor,
+                      enabledBorder: OutlineInputBorder(
+                      ),
+                      border: InputBorder.none,
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          _togglevisibility();
+                        },
+                        child: Icon(
+                          _showPassword ? Icons.visibility : Icons
+                              .visibility_off, color: Colors.white,),
+                      ),
+                  ), cursorColor: textColor, style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),),
+                ),
+              ],
+            ),
+            Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Center(
+                child: ElevatedButton(onPressed: (){
+                    print("hello");
+                  },
+                  child: Text("Log in", style: TextStyle(color: selectedTextColor)),),
+              ),
+            )
+          ],
+
+        ),
+      )
+
+    );
+  }
+
+}
 
 class MyHomePage extends StatefulWidget {
   @override
@@ -73,7 +316,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String _activeWidget = 'All';
+  String _activeWidget = 'Music';
   Widget bodyWidget() {
     switch (_activeWidget) {
       case 'All':
@@ -168,19 +411,15 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        drawerEnableOpenDragGesture: false,
+        //drawerEnableOpenDragGesture: false,
         key: _key,
         appBar: AppBar(
-
-          automaticallyImplyLeading: false, // this will hide Drawer hamburger icon
-         // actions: <Widget>[Container()],
+          automaticallyImplyLeading: false,
           backgroundColor: Color.fromRGBO(0, 0, 0, 1),
-
           title: Padding(
             padding: const EdgeInsets.all(1.0),
             child: Row(
                 children: <Widget>[
-
                   Padding(
                     padding: const EdgeInsets.all(5.0),
                       child:SizedBox(
@@ -207,9 +446,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
                   ),
-
-
-
                   Padding(
                     padding: const EdgeInsets.all(2.0),
 
@@ -240,7 +476,6 @@ class _MyHomePageState extends State<MyHomePage> {
                           ),
                         )
                     ),
-
                   Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: SizedBox(
@@ -317,25 +552,65 @@ class _MyHomePageState extends State<MyHomePage> {
 
         ),
       drawer: Drawer(
+        child:
+            Container(
+              color: Colors.black ,
+              child: ListView(
+                children: [
+                  SizedBox(
+                    height: 100,
+                    child: DrawerHeader(
+                      child: Container(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            CircleAvatar(
+                              backgroundColor: selectedColor,
+                              child: Icon(Icons.person, size: 25),
+                            ),
+                            SizedBox(width:20), // padding 위한 sizedbox
+                            Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [Container(child: Text('Hanseong Lee', style: TextStyle(color: textColor),)),Container(child: Text('View profile', style: TextStyle(color: textColor, fontSize: 10),))]),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 70,
 
+                    child: Container(
 
-          child: ListView(
-          padding: EdgeInsets.zero,
-            children: [
-              const DrawerHeader(
-              decoration: BoxDecoration(
-              color: Colors.blue,
+                      child: Row(children: [Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.bolt,size: 30,color: textColor,),
+                      ),Text(r"What's new",style: TextStyle(color: textColor),)]),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 70,
+                    child: Container(
+                      child: Row(children: [Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.history_rounded,size: 30,color: textColor,),
+                      ),Text('Listening history',style: TextStyle(color: textColor),)]),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 70,
+                    child: Container(
+                      child: Row(children: [Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Icon(Icons.settings_rounded,size: 30,color: textColor,),
+                      ),Text('Settings and Privacy',style: TextStyle(color: textColor),)]),
+                    ),
+                  ),
+                ],
               ),
-              child: Text('Drawer Header'),
+            )
+
       ),
-              ListTile(
-              title: const Text('Home'),
-              onTap: () {
-              // Then close the drawer
-               Navigator.pop(context);},
-      )]
-    ),
-      )
     );
   }
 }
@@ -358,11 +633,7 @@ Future<List<Map>> scrapData() async {
 
   for (int i = 2; i < 17; i+= 2) { //  for (int i = 1; i < 17; i+= 2) {
     String? subscribeCount = response?.getElementsByClassName(albumclass)[i].src;
-    //getElementsByClassName(albumclass)[i].src;
-    print(subscribeCount);
     srclist.add(subscribeCount.toString());
-
-
   }
 
   for (int i =3; i<11; i++){ //  for (int i =3; i<11; i++){
@@ -375,7 +646,6 @@ Future<List<Map>> scrapData() async {
     musicCover['title'] = titlelist[i];
     finallist.add(musicCover);
   }
-  print(titlelist);
   return finallist;
 }
 
