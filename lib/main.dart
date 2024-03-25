@@ -15,7 +15,7 @@ import 'package:sidebarx/sidebarx.dart';
 
 var appBarButtonState = AppBarButtonState();
 
-
+User? currentuser;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,17 +23,18 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   FirebaseAuth.instance.authStateChanges().listen((User? user) {
-    if (user != null) {
-
-      print("userid"+ user.uid);
-    }
-    else{
-
+    if (user == null) {
+      runApp(NotLoginedApp());
+    } else {
+      currentuser = user;
+      print(currentuser);
+      runApp(MyApp());
     }
   });
 
-  runApp(MyApp());
+
 }
 
 
@@ -64,13 +65,46 @@ class MyApp extends StatelessWidget  {
           selectionHandleColor: Colors.green,
         )
       ),
-      home: NotAuthCase(),
+
+      home: MyHomePage(),
+
+
+
+
     );
   }
 }
 
+class NotLoginedApp extends StatelessWidget  {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+          fontFamily: 'GothamMedium',
+          textSelectionTheme:TextSelectionThemeData(
+            selectionColor: Colors.green,
+            cursorColor: Colors.green,
+            selectionHandleColor: Colors.green,
+          )
+      ),
+
+      home: NotAuthCase(),
+
+
+
+
+    );
+  }
+}
+
+
+
 class NotAuthCase extends StatelessWidget {
   const NotAuthCase({super.key});
+
+
   @override
   Widget build(BuildContext buildContext){
     return Scaffold(
@@ -78,7 +112,6 @@ class NotAuthCase extends StatelessWidget {
      body:Column(
        crossAxisAlignment: CrossAxisAlignment.center,
        children: [
-
          Expanded(child:
          Container(
              color: Colors.black,
@@ -199,15 +232,9 @@ class NotAuthCase extends StatelessWidget {
            ],),
          ),
          ),
-
        ],
-
-
      )
-
     );
-
-
 
   }
 
@@ -228,6 +255,9 @@ class _LoginCase extends State<LoginCase>{
 
   @override
   Widget build(BuildContext context) {
+    final idController = TextEditingController();
+    final passwordController = TextEditingController();
+
     return Scaffold(
         appBar: AppBar(
           iconTheme: IconThemeData(
@@ -248,7 +278,10 @@ class _LoginCase extends State<LoginCase>{
                 SizedBox(width: 10,height: 20,),
                 Container(
                   width: 320,
-                  child: TextField(decoration: InputDecoration(
+                  child: TextField(
+                    controller: idController,
+                    decoration: InputDecoration(
+
                     filled: true,
                     fillColor: buttonColor,
                       enabledBorder: OutlineInputBorder(
@@ -269,6 +302,7 @@ class _LoginCase extends State<LoginCase>{
                 Container(
                   width: 320,
                   child: TextFormField(
+                    controller: passwordController,
                     obscureText: !_showPassword,
                     decoration: InputDecoration(
                       filled: true,
@@ -294,8 +328,24 @@ class _LoginCase extends State<LoginCase>{
             Padding(
               padding: const EdgeInsets.all(30.0),
               child: Center(
-                child: ElevatedButton(onPressed: (){
-                    print("hello");
+                child: ElevatedButton(onPressed: () async{
+
+
+                  try {
+                    final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+                        email: idController.text,
+                        password: passwordController.text
+                    );
+                    print(credential.user);
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'user-not-found') {
+                      print('No user found for that email.');
+                    } else if (e.code == 'wrong-password') {
+                      print('Wrong password provided for that user.');
+                    }
+
+                  }
+
                   },
                   child: Text("Log in", style: TextStyle(color: selectedTextColor)),),
               ),
@@ -571,7 +621,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             SizedBox(width:20), // padding 위한 sizedbox
                             Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [Container(child: Text('Hanseong Lee', style: TextStyle(color: textColor),)),Container(child: Text('View profile', style: TextStyle(color: textColor, fontSize: 10),))]),
+                                children: [Container(child: Text(currentuser!.displayName.toString(), style: TextStyle(color: textColor),)),Container(child: Text('View profile', style: TextStyle(color: textColor, fontSize: 10),))]),
                           ],
                         ),
                       ),
@@ -614,8 +664,6 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
 
 
 
