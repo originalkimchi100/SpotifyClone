@@ -1,12 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:test_drive/AppBarButtonState.dart';
 
 
-const buttonColor = Color.fromRGBO(42,42,42,1);
-const textColor = Colors.white;
-const selectedColor = Colors.green;
-const selectedTextColor = Colors.black;
 
 Row HomeCardRow(String firstSongPicture, String Title, String secondSongPicture, String secondTitle) {
   const buttonColor = Color.fromRGBO(42, 42, 42, 1);
@@ -70,62 +65,3 @@ Row HomeCardRow(String firstSongPicture, String Title, String secondSongPicture,
   );
 }
 
-class MyWidget extends StatefulWidget {
-  const MyWidget({Key? key, required this.appBarButtonState, required this.currentState, required this.myState}) : super(key:key);
-  final AppBarButtonState appBarButtonState;
-  final String myState;
-  final String currentState;
-
-  @override
-  State<StatefulWidget> createState()=> MyState();
-}
-
-class MyState extends State<MyWidget>{
-  @override
-  Widget build(BuildContext context){
-
-    AppBarButtonState appBarButtonState = widget.appBarButtonState;
-    String myState = widget.myState;
-
-
-    return
-      Padding(
-        padding: const EdgeInsets.all(4.0),
-
-        child: SizedBox(
-            child: ElevatedButton(
-              child: Text(myState, style: TextStyle(
-                color: (appBarButtonState.getCurrentState() == myState)
-                    ? selectedTextColor
-                    : textColor,),),
-
-              onPressed: () {
-                setState(() {
-                  switch (myState) {
-                    case('All'):
-                      appBarButtonState.setCurrentStateToAll();
-                    case('Music'):
-                      appBarButtonState.setCurrentStateToMusic();
-                    case('Podcasts'):
-                      appBarButtonState.setCurrentStateToPodcasts();
-                  }
-
-                });
-                },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: (appBarButtonState
-                    .getCurrentState() == myState)
-                    ? selectedColor
-                    : buttonColor,
-              ),
-            )
-        ),
-      );
-
-
-
-  }
-
-
-
-}

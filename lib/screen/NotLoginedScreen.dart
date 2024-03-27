@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'Colors.dart';
+import '../Colors.dart';
 import 'LoginScreen.dart' as loginScreen;
 
 
