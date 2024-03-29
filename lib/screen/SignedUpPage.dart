@@ -1,41 +1,44 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'homePageScreen.dart';
-
-class LoginCase extends StatefulWidget {
+class signUpCase extends StatefulWidget {
   @override
-  _LoginCase createState() => _LoginCase();
+  _signUpCase createState() => _signUpCase();
 }
-class _LoginCase extends State<LoginCase>{
+class _signUpCase extends State<signUpCase>{
   var definedColors = DefinedColors();
 
   bool _showPassword = false;
-  bool _passwordnotExist = false;
-  void _passwordnotExistWarning() {
-    setState(() {
-      _passwordnotExist = true;
-    });
-  }
-  bool _wrongPassword = false;
-  void _wrongPasswordWarning() {
-    setState(() {
-      _wrongPassword = true;
-    });
-  }
   void _togglevisibility() {
     setState(() {
       _showPassword = !_showPassword;
     });
   }
 
+  bool _weakPassword = false;
+  void _weakPasswordWarning() {
+    setState(() {
+      _weakPassword = true;
+    });
+  }
+  bool _emailExists = false;
+  void _emailExistsWarning() {
+    setState(() {
+      _emailExists = true;
+    });
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext buildContext) {
     final idController = TextEditingController();
     final passwordController = TextEditingController();
-
+    final nicknameController = TextEditingController();
     return Scaffold(
+        resizeToAvoidBottomInset : false,
         appBar: AppBar(
+          title: Text("Sign Up", style: TextStyle(color: definedColors.textColor,fontSize: 20,fontWeight:FontWeight.bold),),
           iconTheme: IconThemeData(
             color: Colors.white, //change your color here
           ),
@@ -48,9 +51,8 @@ class _LoginCase extends State<LoginCase>{
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
 
-              Row(children: [SizedBox(width: 10,),Text("Email or username",style: TextStyle(color: definedColors.textColor, fontSize: 30,fontWeight: FontWeight.bold),),]),
-              Row(
-                children: [
+              Row(children: [SizedBox(width: 10,),Text("Email",style: TextStyle(color: definedColors.textColor, fontSize: 30,fontWeight: FontWeight.bold),),]),
+              Row(children: [
                   SizedBox(width: 10,height: 20,),
                   Container(
                     width: 320,
@@ -69,8 +71,7 @@ class _LoginCase extends State<LoginCase>{
                       color: Colors.white,
                     ),),
                   ),
-                ],
-              ),
+                ],),
               Row(children: [SizedBox(width: 10,),Text("Password",style: TextStyle(color: definedColors.textColor, fontSize: 20,fontWeight: FontWeight.bold),),]),
               Row(
                 children: [
@@ -102,8 +103,30 @@ class _LoginCase extends State<LoginCase>{
                   ),
                 ],
               ),
-              Visibility(child: Text("The password provided is too weak.", style: TextStyle(color: Colors.red),), visible: _passwordnotExist,),
-              Visibility(child: Text("The account already exists for that email", style: TextStyle(color: Colors.red),), visible: _wrongPassword,),
+              Row(children: [SizedBox(width: 10,),Text("What's your name?",style: TextStyle(color: definedColors.textColor, fontSize: 30,fontWeight: FontWeight.bold),),]),
+              Row(children: [
+                SizedBox(width: 10,height: 20,),
+                Container(
+                  width: 320,
+                  child: TextField(
+                    controller: nicknameController,
+                    decoration: InputDecoration(
+
+                        filled: true,
+                        fillColor: definedColors.buttonColor,
+                        enabledBorder: OutlineInputBorder(
+                        ),
+                        border: InputBorder.none
+
+                    ), cursorColor: definedColors.textColor, style: const TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                  ),),
+                ),
+
+              ],),
+              Visibility(child: Text("The password provided is too weak.", style: TextStyle(color: Colors.red),), visible: _weakPassword,),
+              Visibility(child: Text("The account already exists for that email", style: TextStyle(color: Colors.red),), visible: _emailExists,),
               Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Center(
@@ -111,26 +134,33 @@ class _LoginCase extends State<LoginCase>{
 
 
                     try {
-                      UserCredential credential = await FirebaseAuth.instance.signInWithEmailAndPassword(
-                          email: idController.text,
-                          password: passwordController.text
-                      );
-                      print(credential);
-                      Navigator.push(context, MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser:credential.user)));
-                      print(credential.user);
+                      UserCredential result = await FirebaseAuth.instance.createUserWithEmailAndPassword(email: idController.text,password: passwordController.text,);
+
+
+                      await result.user?.updateDisplayName(nicknameController.text);
+                      await result.user?.reload();
+                      print(await result.user);
+
+
+                      User? latestUser = FirebaseAuth.instance.currentUser;
+                      print('${latestUser?.displayName}');
+                      await Navigator.push(buildContext, MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser:latestUser)));
+                      print(result.user);
+
                     } on FirebaseAuthException catch (e) {
-                      if (e.code == 'user-not-found') {
-                      _passwordnotExistWarning();}
-                      else if (e.code == 'wrong-password') {
-                        _wrongPasswordWarning();
+                      if (e.code == 'weak-password') {
+                        print('The password provided is too weak.');
+                        _weakPasswordWarning();
+                      } else if (e.code == 'email-already-in-use') {
+                        print('The account already exists for that email.');
+                        _emailExistsWarning();
                       }
-                    }
-                    catch(e){
+                    } catch (e) {
                       print(e);
                     }
 
                   },
-                    child: Text("Log in", style: TextStyle(color: definedColors.selectedTextColor)),),
+                    child: Text("Create!", style: TextStyle(color: definedColors.selectedTextColor)),),
                 ),
               )
             ],

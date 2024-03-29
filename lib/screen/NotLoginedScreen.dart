@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../Colors.dart';
 import 'LoginScreen.dart' as loginScreen;
+import 'SignedUpPage.dart' as signUpPage;
 
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class NotLoginedScreen extends StatelessWidget {
   //const NotAuthCase({super.key});
@@ -12,6 +15,8 @@ class NotLoginedScreen extends StatelessWidget {
   Widget build(BuildContext buildContext){
 
     return Scaffold(
+        resizeToAvoidBottomInset : false,
+
         body:Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -52,7 +57,7 @@ class NotLoginedScreen extends StatelessWidget {
                 ElevatedButton(
 
                   onPressed: (){
-                    print("hello world");
+                    Navigator.push(buildContext, MaterialPageRoute(builder: (context) => signUpPage.signUpCase()));
 
                   }, child: Text("Sign up",style: TextStyle(color: definedColors.selectedTextColor),),style: ElevatedButton.styleFrom(
                   backgroundColor: definedColors.selectedColor,
@@ -62,8 +67,22 @@ class NotLoginedScreen extends StatelessWidget {
                 SizedBox(
                   width:300,
 
-                  child: OutlinedButton(onPressed:(){
-                    print("hello world");
+                  child: OutlinedButton(onPressed:() async{
+
+                    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+                    // Obtain the auth details from the request
+                    final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+                    // Create a new credential
+                    final credential = GoogleAuthProvider.credential(
+                      accessToken: googleAuth?.accessToken,
+                      idToken: googleAuth?.idToken,
+                    );
+
+                    // Once signed in, return the UserCredential
+                    await FirebaseAuth.instance.signInWithCredential(credential);
+
                   },
                     child:
                     Row(

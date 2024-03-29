@@ -1,8 +1,5 @@
 import 'package:chaleno/chaleno.dart';
 
-
-
-
 Future<List<Map<dynamic,dynamic>>> scrapData() async {
   var srclist = [];
   var titlelist = [];

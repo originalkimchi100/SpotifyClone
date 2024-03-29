@@ -4,12 +4,11 @@ import 'package:firebase_auth/firebase_auth.dart';
 import '../Card.dart' as HomeButtonCard;
 import '../AppBarButtonState.dart';
 import 'package:test_drive/ScrapData.dart';
-
+import 'NotLoginedScreen.dart';
 
 
 class MyHomePage extends StatefulWidget {
   final User? currentuser;
-
   const MyHomePage ({ Key? key, required this.currentuser}): super(key: key);
 
   @override
@@ -100,7 +99,6 @@ class _MyHomePageState extends State<MyHomePage> {
         );
     }
   }
-
   final GlobalKey<ScaffoldState> _key = GlobalKey(); // Create a key
 
   @override
@@ -308,6 +306,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       child: Text("Log out", style: TextStyle(color: definedColors.textColor),),
                       onPressed: () async{
                         await FirebaseAuth.instance.signOut();
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => NotLoginedScreen()));
 
 
                       },
