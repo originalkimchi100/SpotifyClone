@@ -7,18 +7,24 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'screen/NotLoginedScreen.dart' as notLoginedScreen;
 import 'screen/homePageScreen.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 User? currentuser;
 FirebaseAuth? user;
 
 void main() async {
+
+
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   FirebaseAuth auth = FirebaseAuth.instance;
+
+
+  final db = FirebaseFirestore.instance;
+
 
   if(auth.currentUser == null){
     runApp(NotLoginedApp());

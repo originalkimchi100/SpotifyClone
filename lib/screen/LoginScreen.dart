@@ -55,6 +55,7 @@ class _LoginCase extends State<LoginCase>{
                   Container(
                     width: 320,
                     child: TextField(
+
                       controller: idController,
                       decoration: InputDecoration(
 
@@ -78,6 +79,7 @@ class _LoginCase extends State<LoginCase>{
                   Container(
                     width: 320,
                     child: TextFormField(
+
                       enableInteractiveSelection: false,
                       controller: passwordController,
                       obscureText: !_showPassword,
@@ -102,8 +104,8 @@ class _LoginCase extends State<LoginCase>{
                   ),
                 ],
               ),
-              Visibility(child: Text("The password provided is too weak.", style: TextStyle(color: Colors.red),), visible: _passwordnotExist,),
-              Visibility(child: Text("The account already exists for that email", style: TextStyle(color: Colors.red),), visible: _wrongPassword,),
+              Visibility(child: Text("User not found.", style: TextStyle(color: Colors.red),), visible: _passwordnotExist,),
+              Visibility(child: Text("Wrong Password", style: TextStyle(color: Colors.red),), visible: _wrongPassword,),
               Padding(
                 padding: const EdgeInsets.all(30.0),
                 child: Center(
@@ -117,7 +119,6 @@ class _LoginCase extends State<LoginCase>{
                       );
                       print(credential);
                       Navigator.push(context, MaterialPageRoute(builder: (context) =>  MyHomePage(currentuser:credential.user)));
-                      print(credential.user);
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'user-not-found') {
                       _passwordnotExistWarning();}

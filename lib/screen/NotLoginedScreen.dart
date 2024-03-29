@@ -44,6 +44,7 @@ class NotLoginedScreen extends StatelessWidget {
             ),
             Expanded(child:
             Container(
+              width: double.infinity,
               color: Colors.black,
               child: Text("Discover your next favorite playlist.",style: TextStyle(fontSize: 30, color: definedColors.textColor,fontFamily: 'GothamMedium',fontWeight: FontWeight.bold), textAlign: TextAlign.center,),
 
@@ -103,38 +104,6 @@ class NotLoginedScreen extends StatelessWidget {
                       minimumSize: Size.zero,
                       padding: EdgeInsets.only(
                         left: 10,
-                      ),
-
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width:300,
-
-                  child: OutlinedButton(onPressed:(){
-                    print("hello world");
-                  },
-                    child:
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        SizedBox(width: 17, height:40),
-                        Container(
-                          height: 28,
-                          child: Image(
-                            image: AssetImage('assets/Images/FacebookLogo.png'),
-                          ),
-                        ),
-                        SizedBox(width: 30,),
-                        Text("Continue with Facebook",style: TextStyle(color: definedColors.textColor),),
-
-                      ],
-
-                    ),
-                    style: OutlinedButton.styleFrom(
-                      minimumSize: Size.zero,
-                      padding: EdgeInsets.only(
-                        right: 10,
                       ),
 
                     ),

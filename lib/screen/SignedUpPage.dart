@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../Colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'homePageScreen.dart';
+
+
 class signUpCase extends StatefulWidget {
   @override
   _signUpCase createState() => _signUpCase();
