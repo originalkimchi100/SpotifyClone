@@ -19,7 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
   var definedColors = DefinedColors();
   var appBarButtonState = AppBarButtonState();
 
-  String _activeWidget = 'Music';
+  String _activeWidget = 'All';
   Widget bodyWidget() {
     switch (_activeWidget) {
       case 'All':
