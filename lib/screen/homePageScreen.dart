@@ -31,12 +31,10 @@ class _MyHomePageState extends State<MyHomePage> {
                 if (snapshot.hasData == false) {
                   return
                     Expanded(
-
                         child: Column(
                           children: [
                             Container(
                               color: Colors.black,
-
                             ),
                             Container(
                               child: Text("Fetching the data", style: TextStyle(color: definedColors.textColor),textAlign: TextAlign.center,),
@@ -49,10 +47,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 else {
                   return
                     Container(
-
                       color: Colors.black,
                       child:
-
                       Column(
                         children: [
                           Text("Current Billboard Hot 100™",style: TextStyle(color: definedColors.textColor,fontSize: 20,fontFamily: "GothamBold"),),
